@@ -1,0 +1,45 @@
+.alert {
+  display: block;
+  position: relative;
+  width: $alert-width;
+  padding: $alert-padding-y $alert-padding-x;
+  font-family: $alert-font-family;
+  border: $alert-border-width solid transparent;
+  border-radius: $alert-border-radius;
+  line-height: $alert-line-height;
+
+  h4.alert-title {
+    margin-bottom: 0;
+    font-size: $alert-title-font-size;
+  }
+
+  p.alert-msg {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: $alert-msg-font-size;
+  }
+
+  span.alert-close {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+}
+
+.alert-primary {
+  @include alert-type($primary, $primary, $white)
+}
+
+.alert-success {
+  @include alert-type($success, $success, $white)
+}
+
+.alert-warning {
+  @include alert-type($warning, $warning, $white)
+}
+
+.alert-danger {
+  @include alert-type($danger, $danger, $white)
+}

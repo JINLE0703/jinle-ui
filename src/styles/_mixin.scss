@@ -35,4 +35,10 @@
     background: $background;
     border-color: $border;
   }
-} ;
+}
+
+@mixin alert-type($background, $border, $color) {
+  color: $color;
+  background: $background;
+  border-color: $border;
+}
