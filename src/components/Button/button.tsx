@@ -1,17 +1,9 @@
 import React, { ButtonHTMLAttributes, AnchorHTMLAttributes } from 'react';
 import classNames from 'classnames';
 
-export enum ButtonSize {
-  Large = 'lg',
-  Small = 'sm',
-}
+export type ButtonSize = 'lg' | 'sm';
 
-export enum ButtonType {
-  Primary = 'primary',
-  Default = 'default',
-  Danger = 'danger',
-  Link = 'link',
-}
+export type ButtonType = 'primary' | 'default' | 'danger' | 'link';
 
 interface BaseButtonProps {
   className?: string; // 类名
@@ -29,19 +21,19 @@ export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>; // 合
 const Button: React.FC<ButtonProps> = (props) => {
   const {
     className,
-    disabled,
+    disabled = false,
     size,
-    btnType,
-    children,
+    btnType = 'default',
+    children = '按钮',
     href,
     ...restProps // 剩余属性
   } = props;
   const classes = classNames('btn', className, {
     [`btn-${btnType}`]: btnType,
     [`btn-${size}`]: size,
-    disabled: btnType === ButtonType.Link && disabled,
+    disabled: btnType === 'link' && disabled,
   });
-  if (btnType === ButtonType.Link && href) {
+  if (btnType === 'link' && href) {
     return (
       <a className={classes} href={href} {...restProps}>
         {children}
@@ -54,12 +46,6 @@ const Button: React.FC<ButtonProps> = (props) => {
       </button>
     );
   }
-};
-
-Button.defaultProps = {
-  disabled: false,
-  btnType: ButtonType.Default,
-  children: '按钮',
 };
 
 export default Button;
