@@ -1,0 +1,60 @@
+.jinle-menu {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 30px;
+  list-style: none;
+  box-shadow: $menu-box-shadow;
+
+  .jinle-menu-item {
+    padding: $menu-item-padding-y $menu-item-padding-x;
+    cursor: pointer;
+    transition: $menu-transition;
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+
+    &.jinle-menu-item-disabled {
+      color: $menu-item-disabled-color;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    &.jinle-menu-item-selected,
+    &:hover {
+      color: $menu-item-selected-color;
+    }
+  }
+
+  // 水平菜单
+  &.jinle-menu-horizontal {
+    flex-direction: row;
+    border-bottom: $menu-border-width solid $menu-border-color;
+
+    .jinle-menu-item {
+      border-bottom: $menu-item-selected-border-width solid transparent;
+
+      &.jinle-menu-item-selected,
+      &:hover {
+        border-bottom: $menu-item-selected-border-width solid $menu-item-selected-color;
+      }
+    }
+  }
+
+  // 垂直菜单
+  &.jinle-menu-vertical {
+    flex-direction: column;
+    border-right: $menu-border-width solid $menu-border-color;
+
+    .jinle-menu-item {
+      border-left: $menu-item-selected-border-width solid transparent;
+
+      &.jinle-menu-item-selected,
+      &:hover {
+        border-left: $menu-item-selected-border-width solid $menu-item-selected-color;
+      }
+    }
+  }
+}
