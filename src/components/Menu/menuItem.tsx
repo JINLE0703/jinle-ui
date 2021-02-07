@@ -5,19 +5,20 @@ import { MenuContext } from './menu';
 export interface MenuItemProps {
   className?: string; // 类名
   style?: React.CSSProperties; // 样式
-  index?: number; // 索引
+  index?: string; // 索引
   disabled?: boolean; // 禁用
 }
 
 const MenuItem: React.FC<MenuItemProps> = (props) => {
-  const { className, style, index, disabled, children = false } = props;
+  const { className, style, index, disabled = false, children } = props;
   const { currentIndex, onSelect } = useContext(MenuContext); // 接收父级 context
   const classes = classNames('jinle-menu-item', className, {
     'jinle-menu-item-disabled': disabled,
     'jinle-menu-item-selected': currentIndex === index && !disabled,
   });
-  const handleClick = () => {
-    if (onSelect && !disabled && typeof index === 'number') {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSelect && !disabled && typeof index === 'string') {
       onSelect(index);
     }
   };

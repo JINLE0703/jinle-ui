@@ -4,17 +4,29 @@ import Button from './components/Button/button';
 import Alert from './components/Alert/alert';
 import Menu from './components/Menu/menu';
 import MenuItem from './components/Menu/menuItem';
+import SubMenu from './components/Menu/subMenu';
 
 function App() {
   return (
     <div className="App">
       <h1>Menu</h1>
-      <Menu defaultIndex={0} mode='vertical'>
-        <MenuItem index={0}>menu-item-1</MenuItem>
-        <MenuItem index={1} disabled>
-          menu-item-2
-        </MenuItem>
-        <MenuItem index={2}>menu-item-3</MenuItem>
+      <Menu defaultIndex="0" onSelect={(index) => alert(index)}>
+        <MenuItem>menu-item-1</MenuItem>
+        <MenuItem disabled>menu-item-2</MenuItem>
+        <MenuItem>menu-item-3</MenuItem>
+        <SubMenu title="sub-menu">
+          <MenuItem>menu-item-4</MenuItem>
+          <MenuItem>menu-item-5</MenuItem>
+        </SubMenu>
+      </Menu>
+      <Menu defaultIndex="0" mode="vertical" onSelect={(index) => alert(index)} defaultOpenSubMenus={['3']}>
+        <MenuItem>menu-item-1</MenuItem>
+        <MenuItem disabled>menu-item-2</MenuItem>
+        <MenuItem>menu-item-3</MenuItem>
+        <SubMenu title="sub-menu">
+          <MenuItem>menu-item-4</MenuItem>
+          <MenuItem>menu-item-5</MenuItem>
+        </SubMenu>
       </Menu>
 
       <h1>Button</h1>

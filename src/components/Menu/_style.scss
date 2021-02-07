@@ -6,7 +6,8 @@
   list-style: none;
   box-shadow: $menu-box-shadow;
 
-  .jinle-menu-item {
+  // 子节点 menu-item
+  > .jinle-menu-item {
     padding: $menu-item-padding-y $menu-item-padding-x;
     cursor: pointer;
     transition: $menu-transition;
@@ -28,18 +29,56 @@
     }
   }
 
+  // submenu
+  > .jinle-submenu-item {
+    position: relative;
+
+    .jinle-submenu {
+      display: none;
+      list-style: none;
+      padding-left: 0;
+      white-space: nowrap;
+
+      &.jinle-submenu-opened {
+        display: block;
+      }
+
+      .jinle-menu-item {
+        padding: $menu-item-padding-y $menu-item-padding-x;
+        cursor: pointer;
+        transition: $menu-transition;
+        color: $body-color;
+
+        &.jinle-menu-item-selected,
+        &:hover {
+          color: $menu-item-selected-color !important;
+        }
+      }
+    }
+  }
+
   // 水平菜单
   &.jinle-menu-horizontal {
     flex-direction: row;
     border-bottom: $menu-border-width solid $menu-border-color;
 
-    .jinle-menu-item {
+    > .jinle-menu-item {
       border-bottom: $menu-item-selected-border-width solid transparent;
 
       &.jinle-menu-item-selected,
       &:hover {
         border-bottom: $menu-item-selected-border-width solid $menu-item-selected-color;
       }
+    }
+
+    .jinle-submenu {
+      position: absolute;
+      background: $white;
+      z-index: 100;
+      top: calc(100% + 8px);
+      left: 0;
+      border: $menu-border-width solid $menu-border-color;
+      box-shadow: $submenu-box-shadow;
     }
   }
 
@@ -48,7 +87,7 @@
     flex-direction: column;
     border-right: $menu-border-width solid $menu-border-color;
 
-    .jinle-menu-item {
+    > .jinle-menu-item {
       border-left: $menu-item-selected-border-width solid transparent;
 
       &.jinle-menu-item-selected,
