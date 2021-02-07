@@ -46,3 +46,24 @@ test('test object', () => {
 npx jest jest.test.js --watch
 ```
 
+#### 限制子节点为指定组件
+
+`React.Children` 提供了用于处理 `this.props.children` 不透明数据结构的实用方法 `React.Children.map`
+
+```tsx
+const renderChildren = () => {
+    return React.Children.map(children, (child, index) => {
+      const childElement = child as React.FunctionComponentElement<MenuItemProps>;
+      const { displayName } = childElement.type;
+      if (displayName === 'MenuItem') {
+        // 默认赋值 index
+        return React.cloneElement(childElement, {
+          index,
+        });
+      } else {
+        console.error('Warning: Menu has a child with is not a MenuItem component');
+      }
+    });
+  };
+```
+

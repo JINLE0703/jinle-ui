@@ -5,7 +5,7 @@ import { MenuContext } from './menu';
 export interface MenuItemProps {
   className?: string; // 类名
   style?: React.CSSProperties; // 样式
-  index: number; // 索引
+  index?: number; // 索引
   disabled?: boolean; // 禁用
 }
 
@@ -17,7 +17,7 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
     'jinle-menu-item-selected': currentIndex === index && !disabled,
   });
   const handleClick = () => {
-    if (onSelect && !disabled) {
+    if (onSelect && !disabled && typeof index === 'number') {
       onSelect(index);
     }
   };
@@ -28,4 +28,5 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
   );
 };
 
+MenuItem.displayName = 'MenuItem';
 export default MenuItem;
