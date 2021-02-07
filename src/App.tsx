@@ -26,6 +26,10 @@ function App() {
         <SubMenu title="sub-menu">
           <MenuItem>menu-item-4</MenuItem>
           <MenuItem>menu-item-5</MenuItem>
+          <SubMenu title="sub-menu-2">
+            <MenuItem>menu-item-6</MenuItem>
+            <MenuItem>menu-item-7</MenuItem>
+          </SubMenu>
         </SubMenu>
       </Menu>
 

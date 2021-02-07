@@ -15,12 +15,14 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
   const openedSubMenus = defaultOpenSubMenus as Array<string>; // 默认展开项数组
   const isOpened = index && mode === 'vertical' ? openedSubMenus.includes(index) : false;
   const [menuOpen, setOpen] = useState(isOpened); // 菜单展开状态
+  const indexRge = new RegExp(`^${index}`); // 检测 index
   const classes = classNames('jinle-menu-item jinle-submenu-item', className, {
-    'jinle-menu-item-selected': currentIndex === index,
+    'jinle-menu-item-selected': indexRge.test(currentIndex),
   });
   // 点击次级菜单
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setOpen(!menuOpen);
   };
   // 点击事件集合
@@ -48,7 +50,7 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
     });
     const childrenComponent = React.Children.map(children, (child, i) => {
       const childElement = child as React.FunctionComponentElement<MenuItemProps>;
-      if (childElement.type.displayName === 'MenuItem') {
+      if (childElement.type.displayName === 'MenuItem' || (mode === 'vertical' ? childElement.type.displayName === 'SubMenu' : false)) {
         return React.cloneElement(childElement, {
           index: `${index}-${i}`,
         });
