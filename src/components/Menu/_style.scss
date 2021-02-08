@@ -33,6 +33,16 @@
   > .jinle-submenu-item {
     position: relative;
 
+    .jinle-submenu-title {
+      display: flex;
+      align-items: center;
+
+      .jinle-arrow-icon {
+        transition: transform 0.25s ease-in-out;
+        margin-left: 3px;
+      }
+    }
+
     .jinle-submenu {
       display: none;
       list-style: none;
@@ -71,14 +81,22 @@
       }
     }
 
-    .jinle-submenu {
-      position: absolute;
-      background: $white;
-      z-index: 100;
-      top: calc(100% + 8px);
-      left: 0;
-      border: $menu-border-width solid $menu-border-color;
-      box-shadow: $submenu-box-shadow;
+    .jinle-submenu-item {
+      &:hover {
+        .jinle-arrow-icon {
+          transform: rotate(180deg);
+        }
+      }
+
+      .jinle-submenu {
+        position: absolute;
+        background: $white;
+        z-index: 100;
+        top: calc(100% + 8px);
+        left: 0;
+        border: $menu-border-width solid $menu-border-color;
+        box-shadow: $submenu-box-shadow;
+      }
     }
   }
 
@@ -93,6 +111,14 @@
       &.jinle-menu-item-selected,
       &:hover {
         border-left: $menu-item-selected-border-width solid $menu-item-selected-color;
+      }
+    }
+
+    .jinle-submenu-item.jinle-submenu-item-opened {
+      > .jinle-submenu-title {
+        .jinle-arrow-icon {
+          transform: rotate(180deg);
+        }
       }
     }
   }

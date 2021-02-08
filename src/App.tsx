@@ -1,14 +1,22 @@
 import React from 'react';
 import Button from './components/Button/button';
-// import alertDemo from './demos/alert';
 import Alert from './components/Alert/alert';
 import Menu from './components/Menu/menu';
 import MenuItem from './components/Menu/menuItem';
 import SubMenu from './components/Menu/subMenu';
+import Icon from './components/Icon/icon';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+library.add(fas);
 
 function App() {
+  const menuStyle: React.CSSProperties = {
+    width: '300px',
+    marginLeft: '20px',
+  };
   return (
     <div className="App">
+      <Icon theme="danger" icon="angle-up" />
       <h1>Menu</h1>
       <Menu defaultIndex="0" onSelect={(index) => alert(index)}>
         <MenuItem>menu-item-1</MenuItem>
@@ -19,7 +27,7 @@ function App() {
           <MenuItem>menu-item-5</MenuItem>
         </SubMenu>
       </Menu>
-      <Menu defaultIndex="0" mode="vertical" onSelect={(index) => alert(index)} defaultOpenSubMenus={['3']}>
+      <Menu defaultIndex="0" mode="vertical" onSelect={(index) => alert(index)} defaultOpenSubMenus={['3']} style={menuStyle}>
         <MenuItem>menu-item-1</MenuItem>
         <MenuItem disabled>menu-item-2</MenuItem>
         <MenuItem>menu-item-3</MenuItem>

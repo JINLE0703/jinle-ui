@@ -4,6 +4,7 @@
 2. Classnames --- 使用 js 来动态判断是否为组件添加 class
 3. React-testing-library --- 组件单元测试
 4. jest-dom --- 增加 DOM 测试断言
+5. fontawesome --- svg 图标库
 
 # 解决方法
 

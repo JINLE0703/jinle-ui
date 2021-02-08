@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { MenuContext } from './menu';
 import { MenuItemProps } from './menuItem';
+import Icon from '../Icon/icon';
 
 export interface SubMenuProps {
   index?: string;
@@ -18,6 +19,7 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
   const indexRge = new RegExp(`^${index}`); // 检测 index
   const classes = classNames('jinle-menu-item jinle-submenu-item', className, {
     'jinle-menu-item-selected': indexRge.test(currentIndex),
+    'jinle-submenu-item-opened': menuOpen,
   });
   // 点击次级菜单
   const handleClick = (e: React.MouseEvent) => {
@@ -62,7 +64,10 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
   };
   return (
     <li key={index} className={classes} {...clickEvents} {...hoverEvents}>
-      <div className="jinle-submenu-title">{title}</div>
+      <div className="jinle-submenu-title">
+        {title}
+        <Icon icon="angle-down" className="jinle-arrow-icon" />
+      </div>
       {renderChildren()}
     </li>
   );
