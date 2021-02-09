@@ -5,6 +5,7 @@
 3. React-testing-library --- 组件单元测试
 4. jest-dom --- 增加 DOM 测试断言
 5. fontawesome --- svg 图标库
+6. react-transition-group --- 动画库
 
 # 解决方法
 

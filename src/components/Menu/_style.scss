@@ -44,14 +44,9 @@
     }
 
     .jinle-submenu {
-      display: none;
       list-style: none;
       padding-left: 0;
       white-space: nowrap;
-
-      &.jinle-submenu-opened {
-        display: block;
-      }
 
       .jinle-menu-item {
         padding: $menu-item-padding-y $menu-item-padding-x;
