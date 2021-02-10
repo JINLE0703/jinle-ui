@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
+import Icon from '../Icon/icon';
 
 export type AlertType = 'primary' | 'success' | 'danger' | 'warning';
 
 interface BaseAlertProps {
-  className?: string; // 类名
-  type?: AlertType; // 类型
-  closable?: boolean; // 显示关闭按钮
-  title?: string; // 标题
-  message: string; // 内容
-  onClose?: () => void; // 关闭事件
+  /**设置类名 */
+  className?: string;
+  /**设置类型，支持 primary、success、danger、warning */
+  type?: AlertType;
+  /**设置显示隐藏关闭按钮 */
+  closable?: boolean;
+  /**设置标题 */
+  title?: string;
+  /**设置内容，必填项 */
+  message: string;
+  /**关闭事件回调函数 */
+  onClose?: () => void;
 }
 
 const Alert: React.FC<BaseAlertProps> = (props) => {
-  const {
-    className,
-    type = 'primary',
-    closable = true,
-    title,
-    message,
-    onClose,
-  } = props;
+  const { className, type, closable, title, message, onClose } = props;
 
   // 控制组件显示隐藏
   const [show, setShow] = useState(true);
@@ -42,15 +42,16 @@ const Alert: React.FC<BaseAlertProps> = (props) => {
         <div className={classes}>
           {title ? <h4 className="alert-title">{title}</h4> : null}
           <p className="alert-msg">{message}</p>
-          {closable ? (
-            <span className="alert-close" onClick={handleClick}>
-              关闭
-            </span>
-          ) : null}
+          {closable ? <Icon icon="times" className="alert-close" onClick={handleClick} /> : null}
         </div>
       ) : null}
     </>
   );
+};
+
+Alert.defaultProps = {
+  type: 'primary',
+  closable: true,
 };
 
 export default Alert;

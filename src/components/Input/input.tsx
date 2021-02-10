@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import classNames from 'classnames';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Icon from '../Icon/icon';
@@ -18,25 +18,29 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLElement>,
   /**添加图标，在右侧悬浮添加一个图标，用于提示 */
   icon?: IconProp;
   /**添加前缀 用于配置一些固定组合 */
-  prepand?: string | React.ReactElement;
+  prepend?: string | React.ReactElement;
   /**添加后缀 用于配置一些固定组合 */
   append?: string | React.ReactElement;
+  /**内容改变触发事件 */
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  /**icon 点击事件 */
+  onIconClick?: () => void;
 }
 
 const Input: React.FC<InputProps> = (props) => {
-  const { disabled, size, icon, prepand, append, className, style, placeholder, ...restProps } = props;
+  const { disabled, size, icon, prepend, append, className, style, placeholder, onIconClick, ...restProps } = props;
   const classes = classNames('jinle-input-wrapper', className, {
     'jinle-input-disabled': disabled,
     [`jinle-input-${size}`]: size,
-    'jinle-input-group': prepand || append,
+    'jinle-input-group': prepend || append,
     'jinle-input-group-append': append,
-    'jinle-input-group-prepand': prepand,
+    'jinle-input-group-prepend': prepend,
   });
   return (
     <div className={classes} style={style}>
-      {prepand && <div className="jinle-input-prepend">{prepand}</div>}
+      {prepend && <div className="jinle-input-prepend">{prepend}</div>}
       {icon && (
-        <div className="jinle-input-icon-wrapper">
+        <div className="jinle-input-icon-wrapper" onClick={onIconClick}>
           <Icon icon={icon} />
         </div>
       )}

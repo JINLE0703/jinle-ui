@@ -6,12 +6,18 @@ type MenuMode = 'horizontal' | 'vertical'; // 水平 | 垂直
 type SelectCallback = (selectedIndex: string) => void; // 被选中时调用函数
 
 export interface MenuProps {
-  className?: string; // 类名
-  defaultIndex?: string; // 默认 active 菜单索引
-  mode?: MenuMode; // 菜单类型
-  style?: React.CSSProperties; // 根节点样式
+  /**设置类名 */
+  className?: string;
+  /**设置默认菜单索引 */
+  defaultIndex?: string;
+  /**设置菜单类型，支持 horizontal、vertical */
+  mode?: MenuMode;
+  /**设置根节点样式 */
+  style?: React.CSSProperties;
+  /**设置被选中时回调函数 */
   onSelect?: SelectCallback;
-  defaultOpenSubMenus?: string[]; // 垂直菜单默认展开项数组
+  /**设置垂直菜单默认展开项数组，例 ['0', '1-1'] */
+  defaultOpenSubMenus?: string[];
 }
 
 interface IMenuContext {
@@ -25,7 +31,7 @@ interface IMenuContext {
 export const MenuContext = createContext<IMenuContext>({ currentIndex: '0' });
 
 const Menu: React.FC<MenuProps> = (props) => {
-  const { className, defaultIndex = '0', mode = 'horizontal', style, children, onSelect, defaultOpenSubMenus = [] } = props;
+  const { className, defaultIndex, mode, style, children, onSelect, defaultOpenSubMenus } = props;
   const [currentActive, setActive] = useState(defaultIndex); // 存储当前被选中的索引
   const classes = classNames('jinle-menu', className, {
     [`jinle-menu-${mode}`]: mode,
@@ -39,7 +45,7 @@ const Menu: React.FC<MenuProps> = (props) => {
   };
   // 实例化 context
   const passedContext: IMenuContext = {
-    currentIndex: currentActive,
+    currentIndex: currentActive ? currentActive : '0',
     onSelect: handleClick,
     mode,
     defaultOpenSubMenus,
@@ -63,6 +69,12 @@ const Menu: React.FC<MenuProps> = (props) => {
       <MenuContext.Provider value={passedContext}>{renderChildren()}</MenuContext.Provider>
     </ul>
   );
+};
+
+Menu.defaultProps = {
+  defaultIndex: '0',
+  mode: 'horizontal',
+  defaultOpenSubMenus: [],
 };
 
 export default Menu;

@@ -5,7 +5,9 @@ import { CSSTransitionProps } from 'react-transition-group/CSSTransition';
 type AnimationName = 'zoom-in-top' | 'zoom-in-left' | 'zoom-in-bottom' | 'zoom-in-right';
 
 type TarnsitionProps = CSSTransitionProps & {
+  /**设置动画效果名称 */
   animation?: AnimationName;
+  /**设置是否包裹 */
   wrapper?: boolean;
 };
 

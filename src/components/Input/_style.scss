@@ -15,6 +15,7 @@
     top: 0;
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     svg {
       color: $input-placeholder-color;
@@ -95,11 +96,11 @@
   }
 
   &.jinle-input-group > .jinle-input-append,
-  &.jinle-input-group.jinle-input-group-prepand > .jinle-input-inner {
+  &.jinle-input-group.jinle-input-group-prepend > .jinle-input-inner {
     @include border-left-radius(0)
   }
 
-  &.jinle-input-group > .jinle-input-prepand,
+  &.jinle-input-group > .jinle-input-prepend,
   &.jinle-input-group.jinle-input-group-append > .jinle-input-inner {
     @include border-right-radius(0)
   }

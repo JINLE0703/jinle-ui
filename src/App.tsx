@@ -19,10 +19,10 @@ function App() {
   return (
     <div className="App">
       <h1>Input</h1>
-      <Input size="lg" />
+      <Input size="lg" placeholder="please input" onChange={(e)=> console.log(e.target.value)} />
       <Input disabled />
-      <Input icon="search" size="sm" />
-      <Input prepand="http://" />
+      <Input icon="search" size="sm" onIconClick={() => alert(123)} />
+      <Input prepend="http://" />
       <Input append=".com" />
 
       <h1>Menu</h1>
