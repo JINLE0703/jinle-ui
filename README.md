@@ -6,6 +6,7 @@
 4. jest-dom --- 增加 DOM 测试断言
 5. fontawesome --- svg 图标库
 6. react-transition-group --- 动画库
+7. storybook --- 本地调试组件和生成文档
 
 # 解决方法
 

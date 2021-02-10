@@ -5,6 +5,8 @@ import Menu from './components/Menu/menu';
 import MenuItem from './components/Menu/menuItem';
 import SubMenu from './components/Menu/subMenu';
 import Icon from './components/Icon/icon';
+import Input from './components/Input/input';
+
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 library.add(fas);
@@ -16,7 +18,13 @@ function App() {
   };
   return (
     <div className="App">
-      <Icon theme="danger" icon="angle-up" />
+      <h1>Input</h1>
+      <Input size="lg" />
+      <Input disabled />
+      <Input icon="search" size="sm" />
+      <Input prepand="http://" />
+      <Input append=".com" />
+
       <h1>Menu</h1>
       <Menu defaultIndex="0" onSelect={(index) => alert(index)}>
         <MenuItem>menu-item-1</MenuItem>
