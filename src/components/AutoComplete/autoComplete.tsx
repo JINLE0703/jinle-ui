@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import classNames from 'classnames';
 import Input, { InputProps } from '../Input/input';
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
+import useClickOutside from '../../hooks/useClickOutside';
 
 interface DataSourceObject {
   value: string;
@@ -23,11 +25,21 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   const [inputValue, setInputValue] = useState(value as string);
   const [suggestions, setSuggestions] = useState<DataSourceType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hightlightIndex, setHightlightIndex] = useState(-1);
+  /**判断是否进行搜索 */
+  const triggerSearch = useRef(false);
+  /**autocomplete ref */
+  const autoCompleteElementRef = useRef<HTMLDivElement>(null);
   /**防抖 */
   const debounceValue = useDebounce(inputValue, 500);
 
+  /**绑定点击外部事件 */
+  useClickOutside(autoCompleteElementRef, () => {
+    setSuggestions([]);
+  });
+
   useEffect(() => {
-    if (debounceValue) {
+    if (debounceValue && triggerSearch.current) {
       const results = fetchSuggestions(debounceValue);
       if (results instanceof Promise) {
         setLoading(true);
@@ -41,6 +53,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
     } else {
       setSuggestions([]);
     }
+    setHightlightIndex(-1);
   }, [debounceValue]);
 
   /**
@@ -50,7 +63,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
     setInputValue(value);
+    triggerSearch.current = true;
   };
+
   /**
    * 处理点击下拉框内容事件
    * @param item 选中内容
@@ -61,10 +76,52 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
     if (onSelect) {
       onSelect(item);
     }
+    triggerSearch.current = false;
   };
 
   /**
-   * 处理下拉项结构模板
+   * 设置高亮 index
+   * @param index
+   */
+  const hightlight = (index: number) => {
+    if (index < 0) {
+      index = 0;
+    }
+    if (index >= suggestions.length) {
+      index = suggestions.length - 1;
+    }
+    setHightlightIndex(index);
+  };
+
+  /**
+   * 处理键盘事件
+   * @param e
+   */
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (e.keyCode) {
+      case 13:
+        /**回车 */
+        suggestions[hightlightIndex] && handleSelected(suggestions[hightlightIndex]);
+        break;
+      case 38:
+        /**向上 */
+        hightlight(hightlightIndex - 1);
+        break;
+      case 40:
+        /**向下 */
+        hightlight(hightlightIndex + 1);
+        break;
+      case 27:
+        /**esc */
+        setSuggestions([]);
+        break;
+      default:
+        break;
+    }
+  };
+
+  /**
+   * 处理下拉项自定义模板
    * @param item
    */
   const renderTemplate = (item: DataSourceType) => {
@@ -78,8 +135,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
     return (
       <ul>
         {suggestions.map((item, index) => {
+          const itemCLasses = classNames('jinle-suggestion-item', {
+            'jinle-suggestion-item-hightlighted': index === hightlightIndex,
+          });
           return (
-            <li key={index} onClick={() => handleSelected(item)}>
+            <li key={index} className={itemCLasses} onClick={() => handleSelected(item)}>
               {renderTemplate(item)}
             </li>
           );
@@ -87,9 +147,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
       </ul>
     );
   };
+
   return (
-    <div className="jinle-auto-complete">
-      <Input value={inputValue} onChange={handleChange} {...restProps} />
+    <div className="jinle-auto-complete" ref={autoCompleteElementRef}>
+      <Input value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} {...restProps} />
       {loading && <Icon icon="spinner" spin />}
       {suggestions.length > 0 && generateDropdown()}
     </div>
