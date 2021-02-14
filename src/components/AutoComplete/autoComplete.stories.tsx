@@ -60,10 +60,11 @@ export const DefaultAutoComplete: React.VFC<{}> = () => {
     const itemWithGithub = item as DataSourceType<githubProps>
     return (
       <>
-        <h3>name: {itemWithGithub.value}</h3>
+        <p>name: {itemWithGithub.value}</p>
         <p>url: {itemWithGithub.url}</p>
       </>
     )
   }
+
   return <AutoComplete fetchSuggestions={handleFetch} onSelect={handleSelected} renderOption={renderOption} />;
 };

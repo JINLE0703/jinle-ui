@@ -4,6 +4,7 @@ import Input, { InputProps } from '../Input/input';
 import Icon from '../Icon/icon';
 import useDebounce from '../../hooks/useDebounce';
 import useClickOutside from '../../hooks/useClickOutside';
+import Transition from '../Transition/transition';
 
 interface DataSourceObject {
   value: string;
@@ -26,6 +27,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   const [suggestions, setSuggestions] = useState<DataSourceType[]>([]);
   const [loading, setLoading] = useState(false);
   const [hightlightIndex, setHightlightIndex] = useState(-1);
+  const [showDropdown, setShowDropdown] = useState(false);
   /**判断是否进行搜索 */
   const triggerSearch = useRef(false);
   /**autocomplete ref */
@@ -35,23 +37,30 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
 
   /**绑定点击外部事件 */
   useClickOutside(autoCompleteElementRef, () => {
-    setSuggestions([]);
+    setShowDropdown(false);
   });
 
   useEffect(() => {
     if (debounceValue && triggerSearch.current) {
+      setSuggestions([]);
       const results = fetchSuggestions(debounceValue);
       if (results instanceof Promise) {
         setLoading(true);
         results.then((res) => {
           setLoading(false);
           setSuggestions(res);
+          if (res.length > 0) {
+            setShowDropdown(true);
+          }
         });
       } else {
         setSuggestions(results);
+        if (results.length > 0) {
+          setShowDropdown(true);
+        }
       }
     } else {
-      setSuggestions([]);
+      setShowDropdown(false);
     }
     setHightlightIndex(-1);
   }, [debounceValue]);
@@ -133,26 +142,39 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
    */
   const generateDropdown = () => {
     return (
-      <ul>
-        {suggestions.map((item, index) => {
-          const itemCLasses = classNames('jinle-suggestion-item', {
-            'jinle-suggestion-item-hightlighted': index === hightlightIndex,
-          });
-          return (
-            <li key={index} className={itemCLasses} onClick={() => handleSelected(item)}>
-              {renderTemplate(item)}
-            </li>
-          );
-        })}
-      </ul>
+      <Transition
+        in={loading || showDropdown}
+        animation="zoom-in-top"
+        timeout={300}
+        // onExited={() => {
+        //   setSuggestions([]);
+        // }}
+      >
+        <ul className="jinle-suggestion">
+          {loading && (
+            <div className="jinle-suggestion-loading-icon">
+              <Icon icon="spinner" spin />
+            </div>
+          )}
+          {suggestions.map((item, index) => {
+            const itemCLasses = classNames('jinle-suggestion-item', {
+              'jinle-suggestion-item-hightlighted': index === hightlightIndex,
+            });
+            return (
+              <li key={index} className={itemCLasses} onClick={() => handleSelected(item)}>
+                {renderTemplate(item)}
+              </li>
+            );
+          })}
+        </ul>
+      </Transition>
     );
   };
 
   return (
     <div className="jinle-auto-complete" ref={autoCompleteElementRef}>
       <Input value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} {...restProps} />
-      {loading && <Icon icon="spinner" spin />}
-      {suggestions.length > 0 && generateDropdown()}
+      {generateDropdown()}
     </div>
   );
 };

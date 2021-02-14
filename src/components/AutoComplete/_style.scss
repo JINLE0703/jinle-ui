@@ -1,4 +1,43 @@
-.jinle-suggestion-item-hightlighted {
-  background: $primary;
-  color: $white;
+.jinle-auto-complete {
+  position: relative;
+  width: 100%;
+  max-width: $input-max-width;
+
+  .jinle-suggestion-loading-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 75px;
+  }
+
+  .jinle-suggestion {
+    list-style: none;
+    padding-left: 0;
+    white-space: nowrap;
+    position: absolute;
+    background: $white;
+    z-index: 100;
+    top: calc(100% + 8px);
+    left: 0;
+    border: $menu-border-width solid $menu-border-color;
+    box-shadow: $submenu-box-shadow;
+    width: 100%;
+
+    .jinle-suggestion-item {
+      padding: $menu-item-padding-y $menu-item-padding-x;
+      cursor: pointer;
+      transition: $menu-transition;
+      color: $body-color;
+
+      &.jinle-suggestion-item-hightlighted {
+        background: $menu-item-selected-color !important;
+        color: $white !important;
+      }
+
+      &:hover {
+        background: $menu-item-selected-color !important;
+        color: $white !important;
+      }
+    }
+  }
 }
