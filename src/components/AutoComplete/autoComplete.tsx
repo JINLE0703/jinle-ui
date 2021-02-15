@@ -38,6 +38,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   /**绑定点击外部事件 */
   useClickOutside(autoCompleteElementRef, () => {
     setShowDropdown(false);
+    setHightlightIndex(-1);
   });
 
   useEffect(() => {
@@ -130,6 +131,37 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   };
 
   /**
+   * 处理input获得焦点事件
+   */
+  const handleFocus = () => {
+    if (debounceValue) {
+      if (suggestions.length === 0) {
+        const results = fetchSuggestions(debounceValue);
+        if (results instanceof Promise) {
+          setLoading(true);
+          results.then((res) => {
+            setLoading(false);
+            setSuggestions(res);
+            if (res.length > 0) {
+              setShowDropdown(true);
+            }
+          });
+        } else {
+          setSuggestions(results);
+          if (results.length > 0) {
+            setShowDropdown(true);
+          }
+        }
+      } else {
+        setHightlightIndex(-1);
+        setShowDropdown(true);
+      }
+    } else {
+      setShowDropdown(false);
+    }
+  };
+
+  /**
    * 处理下拉项自定义模板
    * @param item
    */
@@ -142,14 +174,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
    */
   const generateDropdown = () => {
     return (
-      <Transition
-        in={loading || showDropdown}
-        animation="zoom-in-top"
-        timeout={300}
-        // onExited={() => {
-        //   setSuggestions([]);
-        // }}
-      >
+      <Transition in={loading || showDropdown} animation="zoom-in-top" timeout={300}>
         <ul className="jinle-suggestion">
           {loading && (
             <div className="jinle-suggestion-loading-icon">
@@ -173,7 +198,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
 
   return (
     <div className="jinle-auto-complete" ref={autoCompleteElementRef}>
-      <Input value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} {...restProps} />
+      <Input value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} onFocus={handleFocus} {...restProps} />
       {generateDropdown()}
     </div>
   );
