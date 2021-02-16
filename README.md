@@ -70,3 +70,21 @@ const renderChildren = () => {
   };
 ```
 
+#### setState 异步问题
+
+setState 里传入函数可解决
+
+```tsx
+  const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
+    setFileList((prevList) => {
+      return prevList.map((file) => {
+        if (file.uid === updateFile.uid) {
+          return { ...file, ...updateObj };
+        } else {
+          return file;
+        }
+      });
+    });
+  };
+```
+
