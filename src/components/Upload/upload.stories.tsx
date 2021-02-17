@@ -3,6 +3,7 @@ import { Meta } from '@storybook/react/types-6-0';
 import { action } from '@storybook/addon-actions';
 
 import Upload, { UploadFile } from './upload';
+import Button from '../Button/button';
 
 export default {
   title: '数据录入/Upload',
@@ -44,6 +45,8 @@ export const defaultUpload: React.VFC<{}> = () => {
       headers={{ 'X-POWER-BY': 'jinle' }}
       accept={'image/*'}
       multiple
-    />
+    >
+      <Button btnType="primary">Upload File</Button>
+    </Upload>
   );
 };

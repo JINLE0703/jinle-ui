@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import axios from 'axios';
 
 import UploadList from './uploadList';
-import Button from '../Button/button';
 
 type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error';
 export interface UploadFile {
@@ -39,8 +38,10 @@ export interface UploadProps {
   withCookie?: boolean;
   /**设置文件上传类型 */
   accept?: string;
-  /**设置文件多选 */
+  /**是否支持文件多选 */
   multiple?: boolean;
+  /**是否支持文件拖拽 */
+  drag?: boolean;
   /**上传文件前回调函数 */
   beforeUpload?: (file: UploadFile) => boolean | Promise<UploadFile>;
   /**上传状态改变回调函数 */
@@ -65,6 +66,8 @@ const Upload: React.FC<UploadProps> = (props) => {
     withCookie,
     accept,
     multiple,
+    drag,
+    children,
     beforeUpload,
     onChange,
     onProgress,
@@ -215,24 +218,24 @@ const Upload: React.FC<UploadProps> = (props) => {
 
   return (
     <div className="jinle-upload">
-      <Button btnType="primary" onClick={handleClick}>
-        Upload File
-      </Button>
-      <input
-        style={{ display: 'none' }}
-        type="file"
-        ref={fileInput}
-        onChange={handleFileChange}
-        accept={accept}
-        multiple={multiple}
-      />
+      <div className="jinle-upload-input" onClick={handleClick}>
+        {children}
+        <input
+          style={{ display: 'none' }}
+          type="file"
+          ref={fileInput}
+          onChange={handleFileChange}
+          accept={accept}
+          multiple={multiple}
+        />
+      </div>
       <UploadList fileList={fileList} onRemove={handleRemove} />
     </div>
   );
 };
 
 Upload.defaultProps = {
-  name: 'file',
+  name: 'file'
 };
 
 export default Upload;
