@@ -42,15 +42,15 @@ export interface UploadProps {
   /**设置文件多选 */
   multiple?: boolean;
   /**上传文件前回调函数 */
-  beforeUpload?: (file: File) => boolean | Promise<File>;
+  beforeUpload?: (file: UploadFile) => boolean | Promise<UploadFile>;
   /**上传状态改变回调函数 */
-  onChange?: (file: File) => void;
+  onChange?: (file: UploadFile) => void;
   /**上传进行中回调函数 */
-  onProgress?: (percentage: number, file: File) => void;
+  onProgress?: (percentage: number, file: UploadFile) => void;
   /**上传成功回调函数 */
-  onSuccess?: (data: any, file: File) => void;
+  onSuccess?: (data: any, file: UploadFile) => void;
   /**上传失败回调函数 */
-  onError?: (err: any, file: File) => void;
+  onError?: (err: any, file: UploadFile) => void;
   /**移除文件回调函数 */
   onRemove?: (file: UploadFile) => void;
 }
@@ -96,6 +96,22 @@ const Upload: React.FC<UploadProps> = (props) => {
   };
 
   /**
+   * 初始化uploadFile
+   * @param file
+   */
+  const initUploadFile = (file: File) => {
+    let _file: UploadFile = {
+      uid: Date.now() + '-upload-file',
+      size: file.size,
+      name: file.name,
+      status: 'ready',
+      percent: 0,
+      raw: file,
+    };
+    return _file;
+  };
+
+  /**
    * 处理点击事件
    */
   const handleClick = () => {
@@ -126,14 +142,15 @@ const Upload: React.FC<UploadProps> = (props) => {
   const UploadFiles = (files: FileList) => {
     let postFiles = Array.from(files);
     postFiles.forEach((file) => {
+      let _file = initUploadFile(file);
       if (!beforeUpload) {
-        post(file);
+        post(_file);
       } else {
-        const result = beforeUpload(file);
+        const result = beforeUpload(_file);
         if (result && result instanceof Promise) {
           result.then((processedFile) => post(processedFile));
         } else if (result !== false) {
-          post(file);
+          post(_file);
         }
       }
     });
@@ -143,23 +160,14 @@ const Upload: React.FC<UploadProps> = (props) => {
    * 文件上传异步请求
    * @param file
    */
-  const post = (file: File) => {
-    let _file: UploadFile = {
-      uid: Date.now() + '-upload-file',
-      size: file.size,
-      name: file.name,
-      status: 'ready',
-      percent: 0,
-      raw: file,
-    };
-    // setFileList([_file, ...fileList]);
+  const post = (file: UploadFile) => {
     setFileList((prevList) => {
-      return [_file, ...prevList];
+      return [file, ...prevList];
     });
 
     // 设置请求内容
     const formData = new FormData();
-    formData.append(name || 'file', file);
+    formData.append(name || 'file', file.raw as File);
     if (data) {
       Object.keys(data).forEach((key) => {
         formData.append(key, data[key]);
@@ -177,18 +185,18 @@ const Upload: React.FC<UploadProps> = (props) => {
         onUploadProgress: (e) => {
           let percentage = Math.round((e.loaded * 100) / e.total) || 0;
           if (percentage < 100) {
-            updateFileList(_file, { percent: percentage, status: 'uploading' });
+            updateFileList(file, { percent: percentage, status: 'uploading' });
             onProgress && onProgress(percentage, file);
           }
         },
       })
       .then((res) => {
-        updateFileList(_file, { status: 'success', response: res.data });
+        updateFileList(file, { status: 'success', response: res.data });
         onSuccess && onSuccess(res.data, file);
         onChange && onChange(file);
       })
       .catch((err) => {
-        updateFileList(_file, { status: 'error', error: err });
+        updateFileList(file, { status: 'error', error: err });
         onError && onError(err, file);
         onChange && onChange(file);
       });
