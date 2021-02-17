@@ -1,7 +1,8 @@
 import React from 'react';
 import { UploadFile } from './upload';
-import Icon from '../Icon/icon';
 
+import Icon from '../Icon/icon';
+import Progress from '../Progress/progress';
 export interface UploadListProps {
   /**上传文件列表 */
   fileList: UploadFile[];
@@ -28,6 +29,7 @@ const UploadList: React.FC<UploadListProps> = (props) => {
             <span className="jinle-file-actions">
               <Icon icon="times" onClick={() => onRemove(item)} />
             </span>
+            {item.status === 'uploading' && <Progress percent={item.percent || 0} />}
           </li>
         );
       })}

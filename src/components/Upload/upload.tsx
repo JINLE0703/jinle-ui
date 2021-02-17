@@ -138,7 +138,7 @@ const Upload: React.FC<UploadProps> = (props) => {
         onUploadProgress: (e) => {
           let percentage = Math.round((e.loaded * 100) / e.total) || 0;
           if (percentage < 100) {
-            updateFileList(_file, { percent: percentage, status: "uploading" });
+            updateFileList(_file, { percent: percentage, status: 'uploading' });
             onProgress && onProgress(percentage, file);
           }
         },

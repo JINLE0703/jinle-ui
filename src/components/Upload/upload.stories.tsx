@@ -30,5 +30,12 @@ const defaultFileList: UploadFile[] = [
 ];
 
 export const defaultUpload: React.VFC<{}> = () => {
-  return <Upload action="https://jsonplaceholder.typicode.com/posts" onChange={action('change')} defaultFileList={defaultFileList} onRemove={(file) => {console.log(file)}} />;
+  return (
+    <Upload
+      action="https://jsonplaceholder.typicode.com/posts"
+      onChange={action('change')}
+      defaultFileList={defaultFileList}
+      onRemove={(file) => console.log(file)}
+    />
+  );
 };
