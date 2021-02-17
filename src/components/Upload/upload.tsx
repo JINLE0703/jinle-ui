@@ -29,6 +29,14 @@ export interface UploadProps {
   action: string;
   /**默认上传文件列表 */
   defaultFileList?: UploadFile[];
+  /**设置自定义请求头 */
+  headers?: { [key: string]: any };
+  /**设置自定义文件名 */
+  name?: string;
+  /**设置自定义上传数据 */
+  data?: { [key: string]: any };
+  /**设置上传文件是否携带cookie */
+  withCookie?: boolean;
   /**上传文件前回调函数 */
   beforeUpload?: (file: File) => boolean | Promise<File>;
   /**上传状态改变回调函数 */
@@ -44,7 +52,20 @@ export interface UploadProps {
 }
 
 const Upload: React.FC<UploadProps> = (props) => {
-  const { action, defaultFileList, beforeUpload, onChange, onProgress, onSuccess, onError, onRemove } = props;
+  const {
+    action,
+    defaultFileList,
+    headers,
+    name,
+    data,
+    withCookie,
+    beforeUpload,
+    onChange,
+    onProgress,
+    onSuccess,
+    onError,
+    onRemove,
+  } = props;
 
   /**上传文件列表 */
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
@@ -127,14 +148,23 @@ const Upload: React.FC<UploadProps> = (props) => {
     };
     setFileList([_file, ...fileList]);
 
+    // 设置请求内容
     const formData = new FormData();
-    formData.append(file.name, file);
+    formData.append(name || 'file', file);
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+    }
+
     // 异步请求
     axios
       .post(action, formData, {
         headers: {
+          ...headers,
           'Content-Type': 'multipart/form-data',
         },
+        withCredentials: withCookie, // 是否携带cookie
         onUploadProgress: (e) => {
           let percentage = Math.round((e.loaded * 100) / e.total) || 0;
           if (percentage < 100) {
@@ -176,5 +206,9 @@ const Upload: React.FC<UploadProps> = (props) => {
     </div>
   );
 };
+
+Upload.defaultProps = {
+  name: 'file'
+}
 
 export default Upload;
