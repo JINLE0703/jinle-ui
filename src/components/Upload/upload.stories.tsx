@@ -42,6 +42,8 @@ export const defaultUpload: React.VFC<{}> = () => {
       name="new_file"
       data={{ key: 'value' }}
       headers={{ 'X-POWER-BY': 'jinle' }}
+      accept={'image/*'}
+      multiple
     />
   );
 };

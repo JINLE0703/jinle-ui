@@ -37,6 +37,10 @@ export interface UploadProps {
   data?: { [key: string]: any };
   /**设置上传文件是否携带cookie */
   withCookie?: boolean;
+  /**设置文件上传类型 */
+  accept?: string;
+  /**设置文件多选 */
+  multiple?: boolean;
   /**上传文件前回调函数 */
   beforeUpload?: (file: File) => boolean | Promise<File>;
   /**上传状态改变回调函数 */
@@ -59,6 +63,8 @@ const Upload: React.FC<UploadProps> = (props) => {
     name,
     data,
     withCookie,
+    accept,
+    multiple,
     beforeUpload,
     onChange,
     onProgress,
@@ -146,7 +152,10 @@ const Upload: React.FC<UploadProps> = (props) => {
       percent: 0,
       raw: file,
     };
-    setFileList([_file, ...fileList]);
+    // setFileList([_file, ...fileList]);
+    setFileList((prevList) => {
+      return [_file, ...prevList];
+    });
 
     // 设置请求内容
     const formData = new FormData();
@@ -201,14 +210,21 @@ const Upload: React.FC<UploadProps> = (props) => {
       <Button btnType="primary" onClick={handleClick}>
         Upload File
       </Button>
-      <input style={{ display: 'none' }} type="file" ref={fileInput} onChange={handleFileChange} />
+      <input
+        style={{ display: 'none' }}
+        type="file"
+        ref={fileInput}
+        onChange={handleFileChange}
+        accept={accept}
+        multiple={multiple}
+      />
       <UploadList fileList={fileList} onRemove={handleRemove} />
     </div>
   );
 };
 
 Upload.defaultProps = {
-  name: 'file'
-}
+  name: 'file',
+};
 
 export default Upload;
