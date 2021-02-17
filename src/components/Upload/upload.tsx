@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
 
+import UploadList from './uploadList';
 import Button from '../Button/button';
 
 type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error';
@@ -26,6 +27,8 @@ export interface UploadFile {
 export interface UploadProps {
   /**上传的地址 */
   action: string;
+  /**默认上传文件列表 */
+  defaultFileList?: UploadFile[];
   /**上传文件前回调函数 */
   beforeUpload?: (file: File) => boolean | Promise<File>;
   /**上传状态改变回调函数 */
@@ -36,13 +39,15 @@ export interface UploadProps {
   onSuccess?: (data: any, file: File) => void;
   /**上传失败回调函数 */
   onError?: (err: any, file: File) => void;
+  /**移除文件回调函数 */
+  onRemove?: (file: UploadFile) => void;
 }
 
 const Upload: React.FC<UploadProps> = (props) => {
-  const { action, beforeUpload, onChange, onProgress, onSuccess, onError } = props;
+  const { action, defaultFileList, beforeUpload, onChange, onProgress, onSuccess, onError, onRemove } = props;
 
   /**上传文件列表 */
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
 
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -133,7 +138,7 @@ const Upload: React.FC<UploadProps> = (props) => {
         onUploadProgress: (e) => {
           let percentage = Math.round((e.loaded * 100) / e.total) || 0;
           if (percentage < 100) {
-            updateFileList(_file, { percent: percentage });
+            updateFileList(_file, { percent: percentage, status: "uploading" });
             onProgress && onProgress(percentage, file);
           }
         },
@@ -149,13 +154,25 @@ const Upload: React.FC<UploadProps> = (props) => {
         onChange && onChange(file);
       });
   };
-  console.log(fileList);
+
+  /**
+   * 处理移除文件事件
+   * @param file 移除文件
+   */
+  const handleRemove = (file: UploadFile) => {
+    setFileList((prevList) => {
+      return prevList.filter((item) => item.uid !== file.uid);
+    });
+    onRemove && onRemove(file);
+  };
+
   return (
     <div className="jinle-upload">
       <Button btnType="primary" onClick={handleClick}>
         Upload File
       </Button>
       <input style={{ display: 'none' }} type="file" ref={fileInput} onChange={handleFileChange} />
+      <UploadList fileList={fileList} onRemove={handleRemove} />
     </div>
   );
 };
