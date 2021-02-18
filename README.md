@@ -122,3 +122,7 @@ updateFileList(file, { status: 'success', response: res.data, percent: 100 }).th
 });
 ```
 
+#### 本地项目关联组件库
+
+先在组件库运行 `yarn link`，再在项目运行 `yarn link jinle-ui`
+
