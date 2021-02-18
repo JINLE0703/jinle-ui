@@ -32,21 +32,22 @@ const defaultFileList: UploadFile[] = [
 
 export const defaultUpload: React.VFC<{}> = () => {
   return (
-    <Upload
-      action="https://jsonplaceholder.typicode.com/posts"
-      onSuccess={action('success')}
-      onError={action('error')}
-      onProgress={action('progress')}
-      onChange={action('change')}
-      defaultFileList={defaultFileList}
-      onRemove={action('remove')}
-      name="new_file"
-      data={{ key: 'value' }}
-      headers={{ 'X-POWER-BY': 'jinle' }}
-      accept={'image/*'}
-      multiple
-    >
-      <Button btnType="primary">Upload File</Button>
-    </Upload>
+    <div style={{ width: '500px' }}>
+      <Upload
+        action="https://jsonplaceholder.typicode.com/posts"
+        onSuccess={action('success')}
+        onError={action('error')}
+        onProgress={action('progress')}
+        onChange={action('change')}
+        defaultFileList={defaultFileList}
+        onRemove={action('remove')}
+        name="new_file"
+        data={{ key: 'value' }}
+        headers={{ 'X-POWER-BY': 'jinle' }}
+        accept={'image/*'}
+        multiple
+        drag
+      />
+    </div>
   );
 };

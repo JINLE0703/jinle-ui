@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import axios from 'axios';
 
 import UploadList from './uploadList';
+import Dragger from './dragger';
 
 type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error';
 export interface UploadFile {
@@ -219,7 +220,7 @@ const Upload: React.FC<UploadProps> = (props) => {
   return (
     <div className="jinle-upload">
       <div className="jinle-upload-input" onClick={handleClick}>
-        {children}
+        {drag ? <Dragger onFile={(files) => UploadFiles(files)}>{children}</Dragger> : children}
         <input
           style={{ display: 'none' }}
           type="file"
@@ -235,7 +236,7 @@ const Upload: React.FC<UploadProps> = (props) => {
 };
 
 Upload.defaultProps = {
-  name: 'file'
+  name: 'file',
 };
 
 export default Upload;
