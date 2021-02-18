@@ -70,21 +70,54 @@ const renderChildren = () => {
   };
 ```
 
-#### setState 异步问题
+#### useState 异步问题
 
-setState 里传入函数可解决
+useState 里传入函数可解决
 
 ```tsx
-  const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
+const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
+  setFileList((prevList) => {
+    return prevList.map((file) => {
+      if (file.uid === updateFile.uid) {
+        return { ...file, ...updateObj };
+      } else {
+        return file;
+      }
+    });
+  });
+};
+```
+
+#### useState 更新后取得最新值
+
+useState 没有像 setState 一样可以传入更新后的回调函数，无法立即获得最新值，只能用 useEffect
+
+但实际场景是并不需要每次 state 更新都触发 success、error、change、progress 函数，且每次触发的函数都不一样
+
+所以在封装了 useState 更新函数的基础上多封装一层 Promise，这样每次都能获取最新值
+
+```tsx
+const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
+  return new Promise((resolve, reject) => {
     setFileList((prevList) => {
       return prevList.map((file) => {
         if (file.uid === updateFile.uid) {
+          resolve({ ...file, ...updateObj });
           return { ...file, ...updateObj };
         } else {
           return file;
-        }
-      });
-    });
-  };
+				}
+			});
+		});
+	});
+};
+```
+
+```tsx
+updateFileList(file, { status: 'success', response: res.data, percent: 100 }).then((_newFile) => {
+	const newFile = _newFile as UploadFile;
+	onSuccess && onSuccess(res.data, newFile);
+	onChange && onChange(newFile);
+});
 ```
 

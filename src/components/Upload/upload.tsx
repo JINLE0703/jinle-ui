@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import axios from 'axios';
 
 import UploadList from './uploadList';
 import Dragger from './dragger';
+import Button from '../Button/button';
 
 type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error';
 export interface UploadFile {
@@ -36,7 +37,7 @@ export interface UploadProps {
   /**设置自定义上传数据 */
   data?: { [key: string]: any };
   /**设置上传文件是否携带cookie */
-  withCookie?: boolean;
+  withCredentials?: boolean;
   /**设置文件上传类型 */
   accept?: string;
   /**是否支持文件多选 */
@@ -64,7 +65,7 @@ const Upload: React.FC<UploadProps> = (props) => {
     headers,
     name,
     data,
-    withCookie,
+    withCredentials,
     accept,
     multiple,
     drag,
@@ -88,13 +89,16 @@ const Upload: React.FC<UploadProps> = (props) => {
    * @param updateObj 更新文件属性对象
    */
   const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
-    setFileList((prevList) => {
-      return prevList.map((file) => {
-        if (file.uid === updateFile.uid) {
-          return { ...file, ...updateObj };
-        } else {
-          return file;
-        }
+    return new Promise((resolve, reject) => {
+      setFileList((prevList) => {
+        return prevList.map((file) => {
+          if (file.uid === updateFile.uid) {
+            resolve({ ...file, ...updateObj });
+            return { ...file, ...updateObj };
+          } else {
+            return file;
+          }
+        });
       });
     });
   };
@@ -148,13 +152,13 @@ const Upload: React.FC<UploadProps> = (props) => {
     postFiles.forEach((file) => {
       let _file = initUploadFile(file);
       if (!beforeUpload) {
-        post(_file);
+        upload(_file);
       } else {
         const result = beforeUpload(_file);
         if (result && result instanceof Promise) {
-          result.then((processedFile) => post(processedFile));
+          result.then((processedFile) => upload(processedFile));
         } else if (result !== false) {
-          post(_file);
+          upload(_file);
         }
       }
     });
@@ -164,7 +168,7 @@ const Upload: React.FC<UploadProps> = (props) => {
    * 文件上传异步请求
    * @param file
    */
-  const post = (file: UploadFile) => {
+  const upload = (file: UploadFile) => {
     setFileList((prevList) => {
       return [file, ...prevList];
     });
@@ -185,24 +189,30 @@ const Upload: React.FC<UploadProps> = (props) => {
           ...headers,
           'Content-Type': 'multipart/form-data',
         },
-        withCredentials: withCookie, // 是否携带cookie
+        withCredentials, // 是否携带cookie
         onUploadProgress: (e) => {
           let percentage = Math.round((e.loaded * 100) / e.total) || 0;
           if (percentage < 100) {
-            updateFileList(file, { percent: percentage, status: 'uploading' });
-            onProgress && onProgress(percentage, file);
+            updateFileList(file, { percent: percentage, status: 'uploading' }).then((_newFile) => {
+              const newFile = _newFile as UploadFile;
+              onProgress && onProgress(percentage, newFile);
+            });
           }
         },
       })
       .then((res) => {
-        updateFileList(file, { status: 'success', response: res.data });
-        onSuccess && onSuccess(res.data, file);
-        onChange && onChange(file);
+        updateFileList(file, { status: 'success', response: res.data, percent: 100 }).then((_newFile) => {
+          const newFile = _newFile as UploadFile;
+          onSuccess && onSuccess(res.data, newFile);
+          onChange && onChange(newFile);
+        });
       })
       .catch((err) => {
-        updateFileList(file, { status: 'error', error: err });
-        onError && onError(err, file);
-        onChange && onChange(file);
+        updateFileList(file, { status: 'error', error: err }).then((_newFile) => {
+          const newFile = _newFile as UploadFile;
+          onError && onError(err, newFile);
+          onChange && onChange(newFile);
+        });
       });
   };
 
@@ -220,7 +230,13 @@ const Upload: React.FC<UploadProps> = (props) => {
   return (
     <div className="jinle-upload">
       <div className="jinle-upload-input" onClick={handleClick}>
-        {drag ? <Dragger onFile={(files) => UploadFiles(files)}>{children}</Dragger> : children}
+        {drag ? (
+          <Dragger onFile={(files) => UploadFiles(files)}>{children}</Dragger>
+        ) : children ? (
+          children
+        ) : (
+          <Button btnType="primary">upload file</Button>
+        )}
         <input
           style={{ display: 'none' }}
           type="file"
