@@ -7,6 +7,7 @@
 5. fontawesome --- svg 图标库
 6. react-transition-group --- 动画库
 7. storybook --- 本地调试组件和生成文档
+8. rimraf --- 跨平台删除指令
 
 # 解决方法
 
