@@ -41,6 +41,7 @@ yarn publish
 6. react-transition-group --- 动画库
 7. storybook --- 本地调试组件和生成文档
 8. rimraf --- 跨平台删除指令
+9. cross-env --- 跨平台修改环境变量
 
 ### 解决方法
 
