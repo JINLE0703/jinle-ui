@@ -1,4 +1,37 @@
-# 第三方库
+# React + TS 打造组件库
+
+### 安装
+
+```
+yarn add jinle-ui
+```
+
+### 使用
+
+```js
+// 加载样式
+import 'jinle-ui/dist/index.css'
+// 引入组件
+import { Button } from 'jinle-ui'
+```
+
+### 本地开发命令
+
+```
+// 启动本地开发环境
+yarn start
+
+// 单元测试
+yarn test
+
+// 打包静态文件
+yarn build
+
+// 发布npm
+yarn publish
+```
+
+### 第三方库
 
 1. normalize.css --- 一个很小的 css 文件，在默认的HTML元素样式上提供了跨浏览器的高度一致性
 2. Classnames --- 使用 js 来动态判断是否为组件添加 class
@@ -9,7 +42,7 @@
 7. storybook --- 本地调试组件和生成文档
 8. rimraf --- 跨平台删除指令
 
-# 解决方法
+### 解决方法
 
 #### 获取原生组件上的属性
 
