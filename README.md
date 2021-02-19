@@ -29,6 +29,9 @@ yarn build
 
 // 发布npm
 yarn publish
+
+// 启动storybook
+yarn storybook
 ```
 
 ### 第三方库
